@@ -237,16 +237,7 @@ class GUItk(object):
     # Methods to change content ---------------------------------------
 
     def set_msg(self, msg):
-        self.messageArea.config(state=tk.NORMAL)
-        self.messageArea.delete(1.0, tk.END)
-        self.messageArea.insert(tk.END, msg)
-        self.messageArea.config(state=tk.DISABLED)
-        # Adjust msg height
-        self.messageArea.update()
-        numlines = self.get_num_lines(self.messageArea)
-        self.set_msg_height(numlines)
-        self.messageArea.update()
-        # put the focus on the entryWidget
+        self.messageValue.set(msg)
 
     def set_msg_height(self, numlines):
         self.messageArea.configure(height=numlines)
@@ -321,28 +312,27 @@ class GUItk(object):
             padx=2 * self.calc_character_width(),
 
         )
-        self.messageArea = tk.Text(
+        self.messageValue = tk.StringVar()
+        self.messageArea = tk.Message(
             self.msgFrame,
-            width=self.width_in_chars,
-            state=tk.DISABLED,
-            background=self.boxRoot.config()["background"][-1],
-            relief='flat',
+            width="4.5i",
+            font=(global_state.PROPORTIONAL_FONT_FAMILY, global_state.PROPORTIONAL_FONT_SIZE),
             padx=(global_state.default_hpad_in_chars *
                   self.calc_character_width()),
             pady=(global_state.default_hpad_in_chars *
                   self.calc_character_width()),
-            wrap=tk.WORD,
+            textvariable=self.messageValue,
 
         )
         self.set_msg(msg)
 
-        self.msgFrame.pack(side=tk.TOP, expand=1, fill='both')
+        self.msgFrame.pack(side=tk.TOP, fill='both')
 
         self.messageArea.pack(side=tk.TOP, expand=1, fill='both')
 
     def create_choicearea(self):
 
-        self.choiceboxFrame = tk.Frame(master=self.boxRoot)
+        self.choiceboxFrame = tk.Frame(master=self.boxRoot, bd=2)
         self.choiceboxFrame.pack(side=tk.TOP, fill=tk.BOTH, expand=tk.YES)
 
         lines_to_show = min(len(self.choices), 20)
@@ -350,7 +340,7 @@ class GUItk(object):
         # --------  put the self.choiceboxWidget in the self.choiceboxFrame ---
         self.choiceboxWidget = tk.Listbox(self.choiceboxFrame,
                                           height=lines_to_show,
-                                          borderwidth="1m", relief="flat",
+                                          borderwidth=0, relief="flat",
                                           bg="white"
                                           )
 
